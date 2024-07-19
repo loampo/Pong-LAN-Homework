@@ -9,9 +9,10 @@ namespace Pong
 {
     public class MyBallNetwork : NetworkBehaviour
     {
-        public float speed = 30;
+        public float initialSpeed = 30;
         public Rigidbody2D rigidbody2d;
         private MyPongNetworkManager networkManager;
+        private float actualSpeed;
 
         public override void OnStartServer()
         {
@@ -65,18 +66,18 @@ namespace Pong
 
                 Vector2 dir = new Vector2(x, y).normalized;
 
-                rigidbody2d.velocity = dir * speed;
+                rigidbody2d.velocity = dir * actualSpeed++;
             }
         }
 
         private void LeftBall()
         {
-            rigidbody2d.velocity = -Vector2.right * speed;
+            rigidbody2d.velocity = -Vector2.right * actualSpeed;
         }
 
         private void RightBall()
         {
-            rigidbody2d.velocity = Vector2.right * speed;
+            rigidbody2d.velocity = Vector2.right * actualSpeed;
         }
 
         /// <summary>
@@ -87,6 +88,7 @@ namespace Pong
         /// <returns></returns>
         private IEnumerator BallServingWithDelay(float delay, int PlayerServing)
         {
+            actualSpeed = initialSpeed;
             yield return new WaitForSeconds(delay);
             if (PlayerServing == 1)
                 RightBall();
